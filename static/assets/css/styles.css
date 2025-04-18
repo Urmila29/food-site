@@ -1,0 +1,215 @@
+* {
+    box-sizing: border-box;
+    scroll-behavior: smooth;
+}
+html, body {
+    height: 100%;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+}
+.wrapper {
+    flex: 1; /* takes up all available veritcal space before foother */
+}
+body {
+    background-image: url("/static/assets/images/bg.jpg");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-attachment: fixed;
+    font-family: 'Quicksand', sans-serif;
+    color: #1f1f1f;
+    animation: fadeIn 1s ease-in;
+}
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+header {
+    background-color: #1f1f1f;
+    padding: 20px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.7);
+    animation: slideDown 0.8s ease-out;
+}
+@keyframes slideDown {
+    from { transform: translateY(-50px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+h1 a {
+    text-decoration: none;
+    color: inherit;
+}
+header h1 {
+    font-family: 'Dancing Script', cursive;
+    color: #ff7043;
+    margin: 0;
+    font-size: 2.5rem;
+}
+nav a {
+    margin-left: 20px;
+    color: #eeeeee;
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.3s, transform 0.3s;
+}
+nav a:hover {
+    color: #ff7043;
+    transform: scale(1.1);
+}
+main {
+    padding: 60px 40px;
+}
+section {
+    margin-bottom: 60px;
+    animation: fadeInUp 1s ease;
+}
+@keyframes fadeInUp {
+    from {
+        transform: translateY(30px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+h2 {
+    font-family: 'Dancing Script', cursive;
+    color: #ffab91;
+    font-size: 2rem;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+}
+h4 {
+    font-family: 'Dancing Script', cursive;
+    color: #cccccc;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+}
+p {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: #cccccc;
+}
+footer {
+    background-color: #1f1f1f;
+    text-align: center;
+    padding: 20px;
+    font-size: 0.9rem;
+    color: #888;
+    border-top: 1px solid #333;
+}
+.auth-cart {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+.auth-cart a {
+    margin-left: 20px;
+    color: #eeeeee;
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.3s, transform 0.3s;
+}
+.auth-cart a:hover {
+    color: #ff7043;
+    transform: scale(1.1);
+}
+.auth-cart form {
+    margin: 0;
+}
+.logout-btn {
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 600;
+    padding: 10px 20px;
+    background-color: #ff7043;
+    color: #ffffff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    background: none;
+}
+button {
+    font-family: 'Quicksand', sans-serif;
+    font-size: 1rem;
+    padding: 10px 20px;
+    background-color: #ff7043;
+    color: #ffffff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+button:hover {
+    background-color: #ff5722;
+    transform: scale(1.05);
+}
+a.highlight-link {
+    color: #ff7043;
+    font-weight: bold;
+    text-decoration: underline;
+}
+a.highlight-link:hover {
+    color: #ffa270;
+}
+.messages {
+    list-style: none;
+    padding: 10px;
+}
+.messages li {
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+}
+.success {
+    background-color: #d4edda;
+    color: #155724;
+}
+.error {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+.helptext {
+    color: #FFA500;
+}
+ul.errorlist.nonfield li {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+input[name="password1"] ~ ul li {
+    color: #FFA500;
+    font-size: 0.9em;
+}
+input[name="password1"] ~ ul li::marker {
+    color: #FFA500;
+}
+label {
+    color: #eeeeee;
+}
+.profile-table {
+    width: 100%;
+    max-width: 600px;
+    margin: 1.5rem auto;
+    border-collapse: collapse;
+    font-family: 'Quicksand', sans-serif;
+    font-size: 1rem;
+}
+.profile-table th, .profile-table td {
+    border: 1px solid #ddd;
+    padding: 12px 16px;
+    text-align: left;
+}
+.profile-table th {
+    background-color: #ff7043;
+    color: fff;
+    font-weight: 600;
+    width: 30%;
+}
+.profile-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+.profile-table tr:nth-child(odd) {
+    background-color: #f1f4c5;
+}

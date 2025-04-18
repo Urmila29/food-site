@@ -1,0 +1,38 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>FoodSite | Delicious Delivered</title>
+        <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="{% static 'assets/css/styles.css' %}">
+    </head> 
+    <body>
+        <header>
+            {% if user.is_authenticated %}
+                <a href="{% url 'home-page' %}">
+                    <img src="{% static 'assets/images/logo.png' %}" alt="FoodSite logo" height="100">
+                </a>
+            {% else %}
+                <h1><a href="{% url 'home-page' %}">FoodSite</a></h1>
+            {% endif %}
+            <nav>
+                <a href="{% url 'home-page' %}">Home</a>
+                <a href="#restaurants">Restaurants</a>
+                <a href="#offers">Offers</a>
+                <a href="#contact">Contact</a>
+            </nav>
+            <div class="auth-cart">
+                <a href="#cart">🛒 Cart</a>
+                {% if user.is_authenticated %}
+                    <form method="POST" action="{% url 'users:logout-page' %}">
+                        {% csrf_token %}
+                        <button type="submit" class="logout-btn">Logout</button><!-- <a href="{% url 'users:logout-page' %}">Logout</a> -->
+                    </form>
+                    <a href="{% url 'users:profile-page' %}">Profile</a>
+                {% else %}
+                    <a href="{% url 'users:login-page' %}">Login</a>
+                {% endif %}
+            </div>
+        </header>

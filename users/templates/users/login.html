@@ -1,0 +1,21 @@
+{% include 'header.html' %}
+<div class="wrapper">
+    {% block content %}
+    <h2>Login</h2>
+    {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+                <li class="{{ message.tags }}">{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+    <form method="POST" action="{% url 'users:login-page' %}">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Login</button>
+    </form>
+    <p><a href="{% url 'users:forgot-password-page' %}" class="highlight-link">Forgot Password?</a></p>
+    <p>Don't have an account? <a href="{% url 'users:signup-page' %}" class="highlight-link">Register here...</a></p>
+    {% endblock %}
+</div>
+{% include 'footer.html' %}
