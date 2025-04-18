@@ -574,6 +574,30 @@ git status #/ 1st, check what Git sees
 #!        templates/
 #!        users/
 git add . #/ then add your files
+git commit -m "1. Set Up Project & Apps | 2. Created Models"
+#_ If FATAL Error: Who you are?
+git config --global user.name "Urmila Sarvaiya"
+git config --global user.email "sanurmi0129@gmail.com"
+#_ Want to check if it worked?
+got config --global --list #/ user.name= | user.email=
+#_ Now: Re-run your commit command
+git commit -m "1. Set Up Project & Apps | 2. Created Models"
+#* 7. Create GitHub Repository
+Go to https://github.com
+Click + > New Repository
+Fill in:
+    Repository name(food-site)
+    Set poblic/private
+    DO NOT initialize with README/anything (we already have local files)
+    Click create repository
+#_ GitHub will show you a link like this:
+#/ https://github.com/Urmila29/food-site.git
+Copy it.
+#* 8. Connect Local Git to GitHub & Push
+git remote add origin https://github.com/Urmila29/food-site.git
+git branch -M main
+git push -u origin main #!(rejected) main > main (fetch first) error: failed to push some refs to
+git pull origin main --rebase
 
 #! users/templates/users/verify_otp.html
 #! users/templates/users/verify_otp.html
