@@ -1,0 +1,59 @@
+{% include 'header.html' %}
+<div class="wrapper">
+    {% block content %}
+    <h2>Add Your Restaurant Details</h2>
+    {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+                <li class="{{ message.tag }}">{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.non_field_erros }}
+        <div><label for="id_owner">Owner: </label>{{ form.owner }}</div>
+        <div><label for="id_address">Address: </label>{{ form.address }}</div>
+        <div><label for="id_phone">Phone: </label>{{ form.phone }}</div>
+        <div><label for="id_description">Description: </label>{{ form.description }}</div>
+        <div><label for="id_is_full_day_open">Open full day? </label>{{ form.is_full_day_open }}</div>
+        <div id="full-day-times" class="time-fields">
+            <label for="id_open_time">Open Time: </label>{{ form.open_time }}
+            <label for="id_close_time">Close Time: </label>{{ form.close_time }}
+        </div>
+        <div id="session-times" class="time-fields">
+            <h4>Morning Session</h4>
+            <label for="id_morning_open_time">Morning Open: </label>{{ form.morning_open_time }}
+            <label for="id_morning_close_time">Morning Close: </label>{{ form.morning_close_time }}
+            <h4>Evening Session</h4>
+            <label for="id_evening_open_time">Evening Open: </label>{{ form.evening_open_time }}
+            <label for="id_evening_close_time">Evening Close: </label>{{ form.evening_close_time }}
+        </div>
+        <div>
+            <label for="id_restaurant_image">Upload Restaurant Photo: </label>{{ form.restaurant_image }}
+        </div>
+        <button type="submit">Submit</button>
+    </form>
+    {% endblock %}
+</div>
+<script>
+    function toggleTimeFields() {
+        const isFullDayOpen = document.getElementById('id_is_full_day_open');
+        const fullDayTimes = document.getElementById('full-day-times');
+        const SessionTimes = document.getElementById('session-times');
+        if (isFullDayOpen.checked) {
+            fullDayTimes.style.display = 'block';
+            SessionTimes.style.display = 'none';
+        } else {
+            fullDayTimes.style.display = 'none';
+            SessionTimes.style.display = 'block';
+        }
+    }
+    document.addEventListener('DOMContentLoaded', function () {
+        const isFullDayOpen = document.getElementById('id_is_full_day_open');
+        toggleTimeFields(); // Inital Call
+        isFullDayOpen.addEventListener('change', toggleTimeFields); // Listen for change
+    });
+    
+</script>
+{% include 'footer.html' %}

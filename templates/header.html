@@ -23,6 +23,19 @@
                 <a href="#offers">Offers</a>
                 <a href="#contact">Contact</a>
             </nav>
+            <nav>
+                {% if user.is_authenticated and user.user_type == 'restaurant' %}
+                    {% if user.restaurant_owner.is_approved %}
+                        {% if user.restaurant.address %}
+                            <a href="{% url 'restaurants:dashboard-view-page' %}">Restaurant Dashboard</a>
+                        {% else %}
+                            <a href="{% url 'restaurants:restaurant-details-page' %}">Add Restaurant</a>
+                        {% endif %}
+                    {% else %}
+                        <a href="{% url 'restaurants:register-restaurant-page' %}">Register Restaurant</a>
+                    {% endif %}
+                {% endif %}
+            </nav>
             <div class="auth-cart">
                 <a href="#cart">🛒 Cart</a>
                 {% if user.is_authenticated %}
@@ -30,7 +43,7 @@
                         {% csrf_token %}
                         <button type="submit" class="logout-btn">Logout</button><!-- <a href="{% url 'users:logout-page' %}">Logout</a> -->
                     </form>
-                    <a href="{% url 'users:profile-page' %}">Profile</a>
+                    <a href="{% url 'users:profile-page' %}">{{ user.username }}<br>Profile</a>
                 {% else %}
                     <a href="{% url 'users:login-page' %}">Login</a>
                 {% endif %}

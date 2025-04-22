@@ -5,20 +5,22 @@ from django.contrib.auth import get_user_model
 User = get_user_model()
 
 class RestaurantOwnerProfile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, limit_choices_to={'user_type': 'restaurant'})
-    food_certificate = models.FileField(upload_to='certificates/')
-    is_approved = models.BooleanField(default=False)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, limit_choices_to={'user_type': 'restaurant'}, related_name='restaurant_owner')
+    restaurant_name = models.CharField(max_length=150)
+    food_certificate = models.FileField(upload_to='certificates/', blank=False, null=False)
+    is_approved = models.BooleanField(default=False )
     submitted_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return self.user.email
+        return self.user.username
     
 class Restaurant(models.Model):
     owner = models.OneToOneField(User, on_delete=models.CASCADE, limit_choices_to={'user_type': 'restaurant'})    
-    restaurant_name = models.CharField(max_length=100)
+    restaurant_owner_profile = models.OneToOneField(RestaurantOwnerProfile, on_delete=models.CASCADE, null=True, blank=True)
     address = models.TextField()
     phone = models.CharField(max_length=15)
-    
+    description = models.TextField(default='Tell the customer about your restaurant', blank=False)
+
     is_full_day_open = models.BooleanField(default=True)
     # Full Day Open/Close
     open_time = models.TimeField(null=True, blank=True)
@@ -34,7 +36,7 @@ class Restaurant(models.Model):
     registered_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return self.restaurant_name
+        return self.restaurant_owner_profile.restaurant_name
     
 class Category(models.Model):
     restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE)

@@ -425,6 +425,7 @@ from django.contrib.auth import get_user_model
 User = get_user_model()
 class RestaurnatProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, limit_choices_to={'user_type': 'restaurant'}) #/ Only restaurant-type users allowed
+    restaurant_name = models.CharField(max_length=100)
     food_certificate = models.FileField(upload_to='certificates/') #/ Upload cerificate file (PDF, image etc.)
     is_approved = models.BooleanField(default=False) #/ Admin will manually approve this
     submitted_at = models.DateTimeField(auto_now_add=True)
@@ -432,9 +433,9 @@ class RestaurnatProfile(models.Model):
         return self.user.email #/ Easy display in admin panel or admin page
 class Restautant(models.Model):
     owner = models.OneToOneField(User, on_delete=CASCADE, limit_choices_to={'user_type': 'restautant'})
-    restaurant_name = models.CharField(max_length=100)
     address = models.TextField()
     phone = models.CharField(max_length=15)
+    description = models.TextField()
     is_full_day_open = models.BooleanField(default=False) #/ if True: open_time, close_time
     open_time = models.TimeField(null=True, blank=True)
     close_time = models.TimeField(null=True, blank=True)
@@ -597,10 +598,35 @@ Copy it.
 git remote add origin https://github.com/Urmila29/food-site.git
 git branch -M main
 git push -u origin main #!(rejected) main > main (fetch first) error: failed to push some refs to
+git pull origin main --rebase #/ error: Commit or stash them
+git add .
+git commit -m "Commit/stash"
 git pull origin main --rebase
-
-#! users/templates/users/verify_otp.html
-#! users/templates/users/verify_otp.html
+git push -u origin main #/ Enumerating objects: 93 done.
+#_ Now: your code is on GitHub!
+#* 9. Add more code / Update Existing Code
+git status
+#!        modified:   steps.py #/ see what's changed
+git add . #/ add changes
+gir commit -m "Step.py changed"
+git push origin main #/ push your local main brach to remote main branch
+#* Bonus: If you work on another PC : want to pull your code
+git clone https://github.com/your-username/localproject.git
+cd myproject
+python -m venv venv
+venv\Scripts\activate #/ then install from requirements
+pip install -r requirements.txt
+#/ now you are ready to continue working!
+#_ SUMMARY OF KEY GIT COMMANDS
+#! Command                      What it does
+#- git init                     Start Git in your folder
+#- git add .                    Stage changes
+#- git commit -m "message"      Save a snapshot
+#- git remote add origin <url>  Connect to GitHub
+#- git push origin main         Upload code
+#- git pull origin main         Download code
+#- git status                   See what's changed
+#- git clone <url>              Download whole repo
 
 #- Step3: Views & Templates
 Home Page: list all restaurants
@@ -608,6 +634,53 @@ Restaurant detail page: menu, info, ratings
 Cart Page: Add/Remove/Update items
 Checkout page: confirm address, payment method
 Orders page: View current and past orders
+#! Register the models: orders/admin.py
+from django.contrib import admin
+from .models import Order, OrderItem, Cart, CartItem, Status
+admin.site.register(Order)
+admin.site.register(OrderItem)
+admin.site.register(Cart)
+admin.site.register(CartItem)
+admin.site.register(Status)
+#! restaurants/admin.py
+from django.contrib import admin
+from .models import RestaurantOwnerProfile, Restaurant, MenuItem, Category
+#* see all restaurant registrations in the admin panel & approve them directly
+@admin.register(RestaurantOwnerProfie)
+class RestaurantOwnerProfileAdmin(admin.ModelAdmin):
+    list_display = ('user', 'is_approved', 'submitted_at')
+    list_filter = ('is_approve',)
+    search_fields = ('user__email',)
+    list_editable = ('is_approved',) #/ You can also make is_approved editable in the list view
+admin.site.Register(Restaurant)
+admin.site.Register(MenuItem)
+admin.site.Register(Category)
+#! CMD: Create superuser if not stored in database: add 'admin to choices in users/models.py'
+python manage.py runserver #/ https://127.0.0.1:8000/admin/
+#! restaurants/forms.py : Create a Restaurant Registration Form
+from django import form
+from .models import RestaurantOwnerProfile
+class RestaurantOwnerProfileForm(forms.ModelForm):
+    class Meta:
+        model = RestaurantOwnerProfile
+        fields = ['food_certificate']
+#! restaurants/views.py : Create a view to handle requests
+
+#! templates/restaurants/register_restaurant.html
+
+#! restaurants/urls.py
+
+#! urls.py : access restaurants's urls
+
+#! 
+#- Home Page: list all restaurants
+#- Restaurant detail page: menu, info, ratings
+#- Cart Page: Add/Remove/Update items
+#- Checkout page: confirm address, payment method
+#- Orders page: View current and past orders
+#! users/templates/users/verify_otp.html
+#! users/templates/users/verify_otp.html
+
 #- Step4: Authentication System
 User Signup/Login using email/password
 Profile dashboard (name, address, etc.)

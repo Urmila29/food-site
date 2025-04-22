@@ -10,6 +10,14 @@
     {% endif %}
     <h2>Welcome, {{ user.username }}!</h2>
     <h4>( {{ user.user_type|capfirst }} Owner )</h4>
+    {% if restaurant_profile %}
+        <ul class="messages">
+            <li class="{{ message.tags }}">{{ message }}</li>
+        </ul>
+    {% endif %}
+    <table class="restaurant-table">
+        
+    </table>
     <table class="profile-table">
         <tr>
             <th>Username</th>

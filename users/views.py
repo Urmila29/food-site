@@ -4,6 +4,7 @@ from django.contrib import messages
 from django.contrib.auth import login #/ auto-login users after signup
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LoginView
+from restaurants.models import RestaurantOwnerProfile
 
 from .forms import CustomUserCreationForm, EmailLoginForm, ForgotPasswordForm, OTPVerificationForm, ResetPasswordForm
 
@@ -40,7 +41,19 @@ def signup_view(request):
 
 @login_required
 def profile_view(request):
-    return render(request, 'users/profile.html')
+    user = request.user
+    restaurant_profile = None
+
+    try:
+        restaurant_profile = user.restaurant_owner # Used related name
+        if restaurant_profile.is_approved:
+            messages.success(request,'✅ Your restaurant has been approved!')
+        else:
+            messages.info(request, '⏳ Your registration request is pending.')
+    except RestaurantOwnerProfile.DoesNotExist:
+        messages.error(request, '❌ You registration request was not found (possibly rejected).')
+
+    return render(request, 'users/profile.html', {'restaurant_profile': restaurant_profile})
 
 def forgot_password_view(request):
     if request.method == 'POST':

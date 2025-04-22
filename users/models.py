@@ -5,6 +5,7 @@ from users.validators import username_validator, email_validator
 # Customize the user fields and behavior: Email - based login | User Roles (Customer, Restaurant Owner) | Extra info like phone & address
 class CustomUser(AbstractUser):
     USER_TYPES = (
+        ('admin', 'Admin'),
         ('customer', 'Customer'),
         ('restaurant', 'Restaurant Owner'),
     )

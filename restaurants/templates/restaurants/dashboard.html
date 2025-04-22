@@ -1,0 +1,35 @@
+{% include 'header.html' %}
+<div class="wrapper">
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert {{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+    {% block content %}
+    <div class="dashboard-card">
+        <h2>{{ restaurant.restaurant_owner_profile.restaurant_name|default:"Your Restaurant" }}</h2>
+        {% if restaurant.restaurant_image %}
+            <img src="{{ restaurant.restaurant_image.url }}" alt="Restaurant Image" style="max-width: 300px;">
+        {% else %}
+            <p>No image availabel</p>
+        {% endif %}
+        <div class="field"><label>Name: </label>{{ restaurant.owner.username }}</div>
+        <div class="field"><label>Phone: </label>{{ restaurant.phone }}</div>
+        <div class="field"><label>Email: </label>{{ restaurant.owner.email }}</div>
+        <div class="field"><label>Address: </label>{{ restaurant.address }}</div>
+        <div class="field"><label>Description: </label>{{ restaurant.description }}</div>
+        <div class="field">
+            <label>Open Type:</label>
+            {% if restaurant.is_full_day_open %}
+                Full Day ({{ restaurant.open_time }} - {{ restaurant.close_time }})
+            {% else %}
+                <div>Morning: {{ restaurant.morning_open_time }} - {{ restaurant.morning_close_time }}</div>
+                <div>Eveninng: {{ restaurant.evening_open_time }} - {{ restaurant.evening_close_time }}</div>
+            {% endif %}
+        </div>
+
+    </div>
+    {% endblock %}
+</div>
+
+{% include 'footer.html' %}
