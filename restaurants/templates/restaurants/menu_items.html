@@ -1,0 +1,26 @@
+{% include 'header.html' %}
+<div class="wrapper">
+    {% block content%}
+    <h2>{{ category.name }} Items</h2>
+    {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+        <li class="{{ message.tags }}">{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Add Item</button>
+    </form>
+    <ul>
+        {% for item in items %}
+        <li>{{ item.name }} - ₹{{ item.price}} {% if not item.is_available %}(Not Available){% endif %}</li>
+        {% empty %}
+        <li class="item-category">No items in this category.</li>
+        {% endfor %}
+    </ul>
+    {% endblock %}
+</div>
+{% include 'footer.html' %}

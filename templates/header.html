@@ -27,7 +27,9 @@
                 {% if user.is_authenticated and user.user_type == 'restaurant' %}
                     {% if user.restaurant_owner.is_approved %}
                         {% if user.restaurant.address %}
-                            <a href="{% url 'restaurants:dashboard-view-page' %}">Restaurant Dashboard</a>
+                            <a href="{% url 'restaurants:dashboard-view-page' %}">Restaurant Dashboard</a><br>
+                            <a href="{% url 'restaurants:dashboard-view-page' %}?section=item-category">Item Category</a><br>
+                            <a href="{% url 'restaurants:all-item-page' %}">All Items</a>
                         {% else %}
                             <a href="{% url 'restaurants:restaurant-details-page' %}">Add Restaurant</a>
                         {% endif %}

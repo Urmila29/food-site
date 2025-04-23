@@ -6,6 +6,26 @@
         {% endfor %}
     {% endif %}
     {% block content %}
+    {% if section == 'item-category' %}
+    <div class="item-category">
+        <h2>Menu (Item Categories)</h2>
+        <form method="POST">
+            {% csrf_token %}
+            {{ form.name }}
+            <button type="submit">Add Category +</button>
+        </form> 
+        <ul>
+            {% for category in categories %}
+            <li>
+                {{ category.name }}
+                <a href="{% url 'restaurants:delete-category-page' category.id %}" onclick="return confirm('Delete this category?')">❌</a>
+            </li>
+            {% empty %}
+            <li>No categories added yet.</li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
     <div class="dashboard-card">
         <h2>{{ restaurant.restaurant_owner_profile.restaurant_name|default:"Your Restaurant" }}</h2>
         {% if restaurant.restaurant_image %}

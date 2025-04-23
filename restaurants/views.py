@@ -1,7 +1,7 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from .forms import RestaurantOwnerProfileForm, RestaurantForm
-from .models import RestaurantOwnerProfile, Restaurant
+from .forms import RestaurantOwnerProfileForm, RestaurantForm, CategoryForm, MenuItemForm
+from .models import RestaurantOwnerProfile, Restaurant, Category, MenuItem
 from django.contrib import messages
 
 from django.core.mail import send_mail
@@ -52,8 +52,68 @@ def restaurant_details_view(request):
 
 @login_required
 def dashboard_view(request):
+    section = request.GET.get('section') # get section from query
     try:
         restaurant = Restaurant.objects.get(owner=request.user)
     except Restaurant.DoesNotExist:
         restaurant = None
-    return render(request, 'restaurants/dashboard.html', {'restaurant': restaurant})
+    form = CategoryForm()
+    categories = []
+    if restaurant and section == 'item-category':
+        categories = Category.objects.filter(restaurant=restaurant)
+        if request.method == 'POST':
+            form = CategoryForm(request.POST)
+            if form.is_valid():
+                name = form.cleaned_data['name'].capitalize()
+                if Category.objects.filter(name=name, restaurant=restaurant).exists():
+                    messages.error(request, f"You have already added '{name}' category.")
+                else:
+                    category = form.save(commit=False)
+                    category.name = name
+                    category.restaurant = restaurant
+                    category.save()
+                    return redirect(f'{request.path}?section=item-category') # only redirect after success
+    return render(request, 'restaurants/dashboard.html', {
+        'restaurant': restaurant,
+        'form': form,
+        'categories': categories,
+        'section': section})
+    
+@login_required
+def delete_category_view(request, category_id):
+    try:
+        restaurant = Restaurant.objects.get(owner=request.user)
+    except Restaurant.DoesNotExist:
+        return redirect('restaurants:dashboard-view-page')
+    category = get_object_or_404(Category, id=category_id, restaurant=restaurant)
+    category.delete()
+    return redirect(f'/restaurants/dashboard/?section=item-category')
+
+@login_required
+def category_items_view(request, category_id):
+    restaurant = Restaurant.objects.get(owner=request.uesr)
+    category = get_object_or_404(Category, id=category_id, restaurant=restaurant)
+    items = MenuItem.objects.filter(category=category)
+    form = MenuItemForm()
+    if request.method == 'POST':
+        form = MenuItemForm(request.POST)
+        if form.is_valid():
+            item = form.save(commit=False)
+            item.category = category
+            item.save()
+            return redirect('restaurants:menu-items-page', category_id=category.id)
+    return render(request, 'restaurants/menu_items.html', {
+        'category': category,
+        'items': items,
+        'form': form
+    })
+
+@login_required
+def all_menu_items_view(request):
+    restaurant = Restaurant.objects.get(owner=request.user)
+    categories = Category.objects.filter(restaurant=restaurant)
+    all_items = MenuItem.objects.filter(category__restaurant=restaurant)
+    return render(request, 'restaurants/menu_items.html', {
+        'categories': categories,
+        'all_items': all_items
+    })

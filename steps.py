@@ -672,7 +672,19 @@ class RestaurantOwnerProfileForm(forms.ModelForm):
 
 #! urls.py : access restaurants's urls
 
-#! 
+#! restaurants/models.py : add category
+#! restaurants/admin.py : register model
+#! restaurants/form.py : Create Category Form
+#! restaurants/views.py : Handle Add/Delete
+#! restaurants/urls.py
+#! headrs.html
+#! dashboard.html
+
+#! Menu Items: restaurants/models.py : MenuItem
+#! Create MenuItemForm restaurants/forms.py 
+#! Update View for Showing Category-Wise Items restaurants/views.py
+
+
 #- Home Page: list all restaurants
 #- Restaurant detail page: menu, info, ratings
 #- Cart Page: Add/Remove/Update items
