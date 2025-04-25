@@ -6,6 +6,10 @@ from django.contrib import messages
 
 from django.core.mail import send_mail
 from django.conf import settings
+# Handle AJAX POST
+from django.views.decorators.csrf import csrf_exempt
+from django.http import JsonResponse
+import json
 
 @login_required
 def register_restaurant_view(request):
@@ -91,17 +95,23 @@ def delete_category_view(request, category_id):
 
 @login_required
 def category_items_view(request, category_id):
-    restaurant = Restaurant.objects.get(owner=request.uesr)
+    restaurant = Restaurant.objects.get(owner=request.user)
     category = get_object_or_404(Category, id=category_id, restaurant=restaurant)
     items = MenuItem.objects.filter(category=category)
     form = MenuItemForm()
     if request.method == 'POST':
-        form = MenuItemForm(request.POST)
+        form = MenuItemForm(request.POST, request.FILES)
         if form.is_valid():
-            item = form.save(commit=False)
-            item.category = category
-            item.save()
-            return redirect('restaurants:menu-items-page', category_id=category.id)
+            dish_name = form.cleaned_data['dish_name'].capitalize()
+            if MenuItem.objects.filter(dish_name=dish_name, category=category).exists():
+                messages.error(request, f"You have already added '{dish_name}' in '{category.name}'.")
+            else:
+                item = form.save(commit=False)
+                item.dish_name = dish_name
+                item.category = category
+                item.save()
+                messages.success(request, 'You have entered item details successfully.')
+                return redirect('restaurants:menu-item-page', category_id=category.id)
     return render(request, 'restaurants/menu_items.html', {
         'category': category,
         'items': items,
@@ -117,3 +127,16 @@ def all_menu_items_view(request):
         'categories': categories,
         'all_items': all_items
     })
+
+@csrf_exempt
+def update_dish_availability(request, item_id):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        is_available = data.get('is_available', True)
+        try:
+            dish = MenuItem.objects.get(id=item_id)
+            dish.is_available = is_available
+            dish.save()
+            return JsonResponse({'message': 'Item availability updated.'})
+        except MenuItem.DoesNotExist:
+            return JsonResponse({'message': 'Item not found.'}, status=404)

@@ -230,6 +230,8 @@ label {
 .dashboard-card h2 {
     text-align: center;
     margin-bottom: 20px;
+    text-shadow: #1f1f1f;
+    text-decoration: wavy;
 }
 .dashboard-card img {
     max-width: 100%;
@@ -246,5 +248,55 @@ label {
 .item-category {
     color: #d4edda;
     font-size: xx-large;
-    font-weight: bolder;
+    text-decoration: none;
+}
+.item-container-grid {
+    margin-top: 50px;
+    margin-left: 75px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+.item-container {
+    border: 2px solid #ff4400;
+    border-radius: 10px;
+    max-width: 300px;
+    background-color: #f8d7da;
+    position: relative;
+    display: inline-flexbox;
+    text-align: center;
+}
+.item-container label {
+    background-color: #721c24;
+    font-size: large;
+}
+.item-description {
+    visibility: hidden;
+    width: 220px;
+    background-color: #333;
+    color: #fff;
+    padding: 8px;
+    border-radius: 6px;
+
+    position: absolute;
+    z-index: 1;
+    bottom: 125%; /* Position above the element */
+    left: 50%;
+    transform: translateX(-50%);
+
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+.item-container:hover .item-description {
+    visibility: visible;
+    opacity: 1;
+}
+.item-container h3 {
+    font-family: 'Quicksand', sans-serif;;
+    color: #ff4400;
+}
+    .item-container img {
+    max-width: 100%;
+    border-radius: 8px;
+    margin-bottom: 10px;
 }

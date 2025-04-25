@@ -608,7 +608,7 @@ git push -u origin main #/ Enumerating objects: 93 done.
 git status
 #!        modified:   steps.py #/ see what's changed
 git add . #/ add changes
-gir commit -m "Step.py changed"
+git commit -m "Step.py changed"
 git push origin main #/ push your local main brach to remote main branch
 #* Bonus: If you work on another PC : want to pull your code
 git clone https://github.com/your-username/localproject.git

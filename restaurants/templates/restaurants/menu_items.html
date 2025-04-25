@@ -1,7 +1,7 @@
 {% include 'header.html' %}
 <div class="wrapper">
     {% block content%}
-    <h2>{{ category.name }} Items</h2>
+    <h2>{{ category.name|default:'All' }} Items</h2>
     {% if messages %}
     <ul class="messages">
         {% for message in messages %}
@@ -9,18 +9,55 @@
         {% endfor %}
     </ul>
     {% endif %}
-    <form method="POST">
+    <form method="POST" enctype="multipart/form-data">
         {% csrf_token %}
         {{ form.as_p }}
-        <button type="submit">Add Item</button>
+        <button type="submit">Add Item</button><br>
     </form>
-    <ul>
+    <div class="item-container-grid">
         {% for item in items %}
-        <li>{{ item.name }} - ₹{{ item.price}} {% if not item.is_available %}(Not Available){% endif %}</li>
+            <div class="item-container">
+                <h3>{{ item.dish_name }} : ₹{{ item.price }}</h3>
+                <img src="items.dish_image.url" alt="Dish Image">
+                <form method="POST">
+                    <!-- Use AJAX (JavaScript + Django View) -->
+                    <label>
+                        <input type="checkbox" item-id="{{ item.id }}"
+                        {% if item.is_available %}checked{% endif %}
+                        onchange="updateAvailability(this)"> Is availabel?
+                    </label>
+                    <!-- <button type="checkbox" name="is_available?">is_available?</button>
+                    {% if not item.is_available %}(Not Available){% else %}{{ item.is_available }}{% endif %} -->
+                </form>
+                <div class="item-description">
+                    {{ item.description }}
+                </div>
+            </div>
         {% empty %}
-        <li class="item-category">No items in this category.</li>
+            <p class="item-category">No items in this category.</p>
         {% endfor %}
-    </ul>
+    </div>
     {% endblock %}
 </div>
 {% include 'footer.html' %}
+
+<script>
+    function updateAvailability(checkbox) {
+        const dishId = checkbox.getAttribute('item-id');
+        const isChecked = checkbox.checked;
+        fetch(`/update-dish-availability/${dishId}/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
+            body: JSON.stringify({
+                is_available: isChecked
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log(data.message); //Optional: Show a toast or alert
+        });
+    }
+</script>
