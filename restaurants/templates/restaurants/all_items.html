@@ -1,27 +1,12 @@
 {% include 'header.html' %}
 <div class="wrapper">
-    {% block content%}
-    <h2>{{ category.name|default:'All' }} Items</h2>
-
-    {% if messages %}
-    <ul class="messages">
-        {% for message in messages %}
-        <li class="{{ message.tags }}">{{ message }}</li>
-        {% endfor %}
-    </ul>
-    {% endif %}
-    
-    <form method="POST" enctype="multipart/form-data">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Add Item</button><br>
-    </form>
-    
+    {% block content %}
+    <h2>All Items</h2>
     <!-- Updated changes message -->
     <div id="availability-message" style="text-align: center; color: green; font-weight: bold;"></div>
     <!-- To display items -->
     <div class="item-container-grid">
-        {% for item in items %}
+        {% for item in all_items %}
             <div class="item-container">
                 <a style="padding-left: 90%;" href="{% url 'restaurants:delete-item-page' item.id %}" onclick="return confirm('Delete this item?')">❌</a>
                 <h3>{{ item.dish_name }} : ₹{{ item.price }}</h3>

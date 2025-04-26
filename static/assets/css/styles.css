@@ -295,8 +295,9 @@ label {
     font-family: 'Quicksand', sans-serif;;
     color: #ff4400;
 }
-    .item-container img {
-    max-width: 100%;
+.item-img {
+    width: 250px;
+    height: 200px;
+    object-fit: cover;
     border-radius: 8px;
-    margin-bottom: 10px;
 }

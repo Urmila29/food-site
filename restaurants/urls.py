@@ -9,6 +9,7 @@ urlpatterns = [
     path('dashboard/', views.dashboard_view, name='dashboard-view-page'),
     path('delete-category/<int:category_id>/', views.delete_category_view, name='delete-category-page'),
     path('category/<int:category_id>/items/', views.category_items_view, name='menu-item-page'),
+    path('update-availability/', views.update_availability, name='update-availability-page'),
     path('all-items/', views.all_menu_items_view, name='all-item-page'),
-    path('update-dish-availability/<int:item_id>/', views.update_dish_availability, name='update-dish-availability-page'),
+    path('delete-item/<int:item_id>/', views.delete_item_view, name='delete-item-page'),
 ]

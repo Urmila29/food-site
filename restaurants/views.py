@@ -119,24 +119,30 @@ def category_items_view(request, category_id):
     })
 
 @login_required
+def update_availability(request):
+    item_id = request.POST.get('item_id')
+    is_available = request.POST.get('is_available') == 'true'
+    try:
+        item = MenuItem.objects.get(id=item_id)
+        item.is_available = is_available
+        item.save()
+        return JsonResponse({'status': 'success'})
+    except MenuItem.DoesNotExist:
+        return JsonResponse({'status': 'error', 'message': 'Item not found'}, status=404)
+
+@login_required
 def all_menu_items_view(request):
     restaurant = Restaurant.objects.get(owner=request.user)
     categories = Category.objects.filter(restaurant=restaurant)
     all_items = MenuItem.objects.filter(category__restaurant=restaurant)
-    return render(request, 'restaurants/menu_items.html', {
+    return render(request, 'restaurants/all_items.html', {
         'categories': categories,
         'all_items': all_items
     })
 
-@csrf_exempt
-def update_dish_availability(request, item_id):
-    if request.method == 'POST':
-        data = json.loads(request.body)
-        is_available = data.get('is_available', True)
-        try:
-            dish = MenuItem.objects.get(id=item_id)
-            dish.is_available = is_available
-            dish.save()
-            return JsonResponse({'message': 'Item availability updated.'})
-        except MenuItem.DoesNotExist:
-            return JsonResponse({'message': 'Item not found.'}, status=404)
+@login_required
+def delete_item_view(request, item_id):
+    dish_name = get_object_or_404(MenuItem, id=item_id)
+    category_id = dish_name.category.id
+    dish_name.delete()
+    return redirect('restaurants:menu-item-page', category_id=category_id)

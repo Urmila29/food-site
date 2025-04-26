@@ -32,3 +32,6 @@ class MenuItemForm(forms.ModelForm):
     class Meta:
         model = MenuItem
         fields = ['dish_name', 'description', 'price', 'is_available', 'dish_image']
+        widget = {
+            'is_available': forms.CheckboxInput(attrs={'class': 'form-cjeck-input'}),
+        }
