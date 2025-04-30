@@ -36,6 +36,11 @@
                     {% else %}
                         <a href="{% url 'restaurants:register-restaurant-page' %}">Register Restaurant</a>
                     {% endif %}
+                {% else %}
+                    <form method="GET" action="{% url 'restaurants:search-items-page' %}">
+                        <input type="text" name="q" placeholder="Search for an item..." value="{{ request.GET.q }}" />
+                        <button type="submit">Search</button>
+                    </form>
                 {% endif %}
             </nav>
             <div class="auth-cart">

@@ -43,6 +43,7 @@ def signup_view(request):
 def profile_view(request):
     user = request.user
     restaurant_profile = None
+    restaurant_registration_missing = False
 
     try:
         restaurant_profile = user.restaurant_owner # Used related name
@@ -51,9 +52,14 @@ def profile_view(request):
         else:
             messages.info(request, '⏳ Your registration request is pending.')
     except RestaurantOwnerProfile.DoesNotExist:
-        messages.error(request, '❌ You registration request was not found (possibly rejected).')
+        if user.user_type == 'Resataurant Owner':
+            messages.error(request, '❌ Your registration request was not found (possibly rejected).')
+            restaurant_registration_missing = True
 
-    return render(request, 'users/profile.html', {'restaurant_profile': restaurant_profile})
+    return render(request, 'users/profile.html', {
+        'restaurant_profile': restaurant_profile,
+        'restaurant_registration_missing': restaurant_registration_missing,
+    })
 
 def forgot_password_view(request):
     if request.method == 'POST':

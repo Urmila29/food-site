@@ -1,0 +1,52 @@
+{% include 'header.html' %}
+<div class="wrapper">
+    {% block content %}
+    {% if query %}
+        <h4>Searched results for: <strong>"{{ query }}"</strong></h4>
+    {% endif %}
+    <h2>All Items</h2>
+
+    <!-- To display individual items -->
+    {% if matched_restaurants %}
+        {% for restaurant in matched_restaurants %}
+            <div class="restaurant-container">
+                <h2 class="restaurant-name"><a style="text-decoration: none;" href="{% url 'restaurants:individual-restaurant-item-page' restaurant.id %}">{{ restaurant.restaurant_owner_profile.restaurant_name }}</a></h2>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    {% if selected_category_items %}
+        <h2>Items in Selected Category:</h2>
+        <div class="item-container-grid">
+            {% for item in selected_category_items %}
+                <div class="item-container">
+                    <h3>{{ item.dish_name }} : ₹{{ item.price }}</h3>
+                    {% if item.dish_image %}
+                        <img src="{{ item.dish_image.url }}" class="item-img" alt="{{ item.dish_name }}">
+                    {% endif %}
+                    {{ item.description }}
+            </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    {% if items %}
+        <h2>Matched Items:</h2>
+        <div class="item-container-grid">
+            {% for item in items %}
+            <div class="item-container">
+                <strong>{{ item.dish_name }} - ₹{{ item.price }}</strong><br>
+                {% if item.dish_image %}
+                    <img src="{{ item.dish_image.url }}" alt="{{ item.dish_name }}" class="item-img">
+                {% endif %}
+                {{ item.description }}
+            </div>
+            {% endfor %}
+        </div>
+    
+    {% elif no_results %}
+        <p class="item-category">No matching restaurant or item found.<br>Please try a different search term.</p>
+    {% endif %}
+    {% endblock%}
+</div>
+{% include 'footer.html' %}

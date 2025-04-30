@@ -1,0 +1,33 @@
+{% include 'header.html' %}
+<div class="wrapper">
+    {% block content %}
+    <div class="restaurant-container">
+        <h2 class="restaurant-name">{{ restaurant.restaurant_owner_profile.restaurant_name }}</h2>
+        <h3>Menu</h3>
+        {% for category in restaurant.category_set.all %}
+            <a href="?q={{ query }}&category={{ category.id }}">    {{ category.name }}    |</a>
+        {% endfor %}
+
+        {% if selected_category_id %}
+            <h2>Items in {{ selected_category.name }}:</h2>
+            
+            {% if items %}
+                <div class="item-container-grid">
+                    {% for item in items %}
+                        <div class="item-container">
+                            <h3>{{ item.dish_name }} - ₹{{ item.price }}</h3>
+                            {% if item.dish_image %}
+                                <img src="{{ item.dish_image.url }}" class="item-img" alt="{{ item.dish_name}}">
+                            {% endif %}
+                            {{ item.description }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p style="color: black;">No items available.</p>
+            {% endif %}    
+        {% endif %}
+    </div>
+    {% endblock %}
+</div>
+{% include 'footer.html' %}

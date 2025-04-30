@@ -11,6 +11,8 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 import json
 
+from django.db.models import Q
+
 @login_required
 def register_restaurant_view(request):
     try:
@@ -129,15 +131,91 @@ def update_availability(request):
         return JsonResponse({'status': 'success'})
     except MenuItem.DoesNotExist:
         return JsonResponse({'status': 'error', 'message': 'Item not found'}, status=404)
-
+        
 @login_required
-def all_menu_items_view(request):
+def owner_menu_items_view(request):
     restaurant = Restaurant.objects.get(owner=request.user)
     categories = Category.objects.filter(restaurant=restaurant)
     all_items = MenuItem.objects.filter(category__restaurant=restaurant)
+
     return render(request, 'restaurants/all_items.html', {
         'categories': categories,
         'all_items': all_items
+    })
+
+def search_show_all_items(request):
+    query = request.GET.get('q', '')
+    # selected_category_id = request.GET.get('category')
+    matched_restaurants = Restaurant.objects.none()
+    matched_items = MenuItem.objects.none()
+    # selected_category_items = None
+    no_results = False
+
+    if query:
+        matched_restaurants = Restaurant.objects.filter(restaurant_owner_profile__restaurant_name__icontains=query)
+
+        if not matched_restaurants.exists():
+            matched_items = MenuItem.objects.filter(dish_name__icontains=query)
+            if not matched_items.exists():
+                no_results = True
+    else:
+        matched_items = MenuItem.objects.all()
+
+    # if selected_category_id:
+    #     try:
+    #         selected_category = Category.objects.get(id=selected_category_id)
+    #         selected_category_items = selected_category.items.all()
+    #     except Category.DoesNotExist:
+    #         selected_category_items = None
+
+    return render(request, 'restaurants/all_items_for_user.html', {
+        'matched_restaurants': matched_restaurants,
+        'items': matched_items,
+        # 'selected_category_items': selected_category_items,
+        'query': query,
+        # 'selected_category_id': selected_category_id,
+        'no_results': no_results,
+    })
+
+def indivual_restaurant_item(request, restaurant_id):
+    restaurant = get_object_or_404(Restaurant, id=restaurant_id)
+    category = Category.objects.filter(restaurant=restaurant)
+    selected_category_id = request.GET.get('category')
+    selected_category = None
+    items = None
+
+    if selected_category_id:
+        try:
+            selected_category = Category.objects.get(id=selected_category_id, restaurant=restaurant)
+            items = MenuItem.objects.filter(category=selected_category)
+        except Category.DoesNotExist:
+            selected_category = None
+            items = None
+
+    return render(request, 'restaurants/restaurant_items.html', {
+        'restaurant': restaurant,
+        'category': category,
+        'selected_category_id': selected_category_id,
+        'selected_category': selected_category,
+        'items': items,
+    })
+
+@login_required
+def update_menu_item_view(request, item_id):
+    item = get_object_or_404(MenuItem, id=item_id, category__restaurant__owner=request.user)
+    
+    if request.method == 'POST':
+        form = MenuItemForm(request.POST, request.FILES, instance=item)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Item updated successfully!')
+            return redirect('restaurants:all-item-page') # After updating, redirect back to all items page
+    else:
+        form = MenuItemForm(instance=item) # for GET request (show the form first)
+    
+    return render(request, 'restaurants/update_item.html', {
+        'form': form,
+        'item': item,
     })
 
 @login_required
